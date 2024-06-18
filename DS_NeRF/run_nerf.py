@@ -873,8 +873,8 @@ def train():
     if use_batching:
         # rays_rgb = torch.Tensor(rays_rgb).to(device)
         # rays_depth = torch.Tensor(rays_depth).to(device) if rays_depth is not None else None
-        raysRGB_iter = iter(DataLoader(RayDataset(rays_rgb), batch_size = N_rand, shuffle=True, num_workers=0))
-        raysDepth_iter = iter(DataLoader(RayDataset(rays_depth), batch_size = N_rand, shuffle=True, num_workers=0)) if rays_depth is not None else None
+        raysRGB_iter = iter(DataLoader(RayDataset(rays_rgb), batch_size = N_rand, shuffle=True, num_workers=0, generator=torch.Generator(device='cuda')))
+        raysDepth_iter = iter(DataLoader(RayDataset(rays_depth), batch_size = N_rand, shuffle=True, num_workers=0, generator=torch.Generator(device='cuda'))) if rays_depth is not None else None
 
 
     N_iters = args.N_iters + 1
@@ -897,7 +897,7 @@ def train():
             try:
                 batch = next(raysRGB_iter).to(device)
             except StopIteration:
-                raysRGB_iter = iter(DataLoader(RayDataset(rays_rgb), batch_size = N_rand, shuffle=True, num_workers=0))
+                raysRGB_iter = iter(DataLoader(RayDataset(rays_rgb), batch_size = N_rand, shuffle=True, num_workers=0, generator=torch.Generator(device='cuda')))
                 batch = next(raysRGB_iter).to(device)
             batch = torch.transpose(batch, 0, 1)
             batch_rays, target_s = batch[:2], batch[2]
@@ -907,7 +907,7 @@ def train():
                 try:
                     batch_depth = next(raysDepth_iter).to(device)
                 except StopIteration:
-                    raysDepth_iter = iter(DataLoader(RayDataset(rays_depth), batch_size = N_rand, shuffle=True, num_workers=0))
+                    raysDepth_iter = iter(DataLoader(RayDataset(rays_depth), batch_size = N_rand, shuffle=True, num_workers=0, generator=torch.Generator(device='cuda')))
                     batch_depth = next(raysDepth_iter).to(device)
                 batch_depth = torch.transpose(batch_depth, 0, 1)
                 batch_rays_depth = batch_depth[:2] # 2 x B x 3
