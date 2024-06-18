@@ -9,7 +9,7 @@ def load_dtu_data(path):
     
     def imread(f):
         if f.endswith('png'):
-            return imageio.imread(f, ignoregamma=True)
+            return imageio.imread(f, apply_gamma=False)
         else:
             return imageio.imread(f)
 

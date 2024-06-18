@@ -241,10 +241,10 @@ def load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
     if not load_imgs:
         return poses, bds
     
-    # imgs = [imageio.imread(f, ignoregamma=True)[...,:3]/255. for f in imgfiles]
+    # imgs = [imageio.imread(f, apply_gamma=False)[...,:3]/255. for f in imgfiles]
     def imread(f):
         if f.endswith('png'):
-            return imageio.imread(f, ignoregamma=True)
+            return imageio.imread(f, apply_gamma=False)
         else:
             return imageio.imread(f)
         
